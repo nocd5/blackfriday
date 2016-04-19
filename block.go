@@ -1175,6 +1175,8 @@ gatherlines:
 
 			if containsBlankLine {
 				*flags |= LIST_ITEM_CONTAINS_BLOCK
+			} else {
+				*flags &= ^LIST_ITEM_CONTAINS_BLOCK
 			}
 
 			// to be a nested list, it must be indented more
@@ -1262,7 +1264,14 @@ gatherlines:
 	for parsedEnd > 0 && cookedBytes[parsedEnd-1] == '\n' {
 		parsedEnd--
 	}
-	p.r.ListItem(out, cookedBytes[:parsedEnd], *flags)
+	item := cookedBytes[:parsedEnd]
+	if bytes.HasPrefix(item, []byte("[ ]")) {
+		p.r.TaskListItem(out, item[3:], false)
+	} else if bytes.HasPrefix(item, []byte("[x]")) {
+		p.r.TaskListItem(out, item[3:], true)
+	} else {
+		p.r.ListItem(out, item, *flags)
+	}
 
 	return line
 }

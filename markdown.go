@@ -168,6 +168,7 @@ type Renderer interface {
 	HRule(out *bytes.Buffer)
 	List(out *bytes.Buffer, text func() bool, flags int)
 	ListItem(out *bytes.Buffer, text []byte, flags int)
+	TaskListItem(out *bytes.Buffer, text []byte, checked bool)
 	Paragraph(out *bytes.Buffer, text func() bool)
 	Table(out *bytes.Buffer, header []byte, body []byte, columnData []int)
 	TableRow(out *bytes.Buffer, text []byte)

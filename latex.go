@@ -123,6 +123,11 @@ func (options *Latex) ListItem(out *bytes.Buffer, text []byte, flags int) {
 	out.Write(text)
 }
 
+func (options *Latex) TaskListItem(out *bytes.Buffer, text []byte, checked bool) {
+	out.WriteString("\n\\item ")
+	out.Write(text)
+}
+
 func (options *Latex) Paragraph(out *bytes.Buffer, text func() bool) {
 	marker := out.Len()
 	out.WriteString("\n")

@@ -418,6 +418,17 @@ func (options *Html) ListItem(out *bytes.Buffer, text []byte, flags int) {
 	}
 }
 
+func (options *Html) TaskListItem(out *bytes.Buffer, text []byte, checked bool) {
+	out.WriteString("<li class=\"task-list-item\">\n")
+	if checked {
+		out.WriteString("<input type=\"checkbox\" checked=\"checked\">")
+	} else {
+		out.WriteString("<input type=\"checkbox\">")
+	}
+	out.Write(text)
+	out.WriteString("</input></li>\n")
+}
+
 func (options *Html) Paragraph(out *bytes.Buffer, text func() bool) {
 	marker := out.Len()
 	doubleSpace(out)
