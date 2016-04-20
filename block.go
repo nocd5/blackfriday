@@ -1175,8 +1175,6 @@ gatherlines:
 
 			if containsBlankLine {
 				*flags |= LIST_ITEM_CONTAINS_BLOCK
-			} else {
-				*flags &= ^LIST_ITEM_CONTAINS_BLOCK
 			}
 
 			// to be a nested list, it must be indented more
@@ -1269,6 +1267,16 @@ gatherlines:
 		p.r.TaskListItem(out, item[3:], false)
 	} else if bytes.HasPrefix(item, []byte("[x]")) {
 		p.r.TaskListItem(out, item[3:], true)
+	} else if bytes.HasPrefix(item, []byte("<p>")) {
+		if bytes.HasPrefix(item[3:], []byte("[ ]")) {
+			out.WriteString("<p>")
+			p.r.TaskListItem(out, item[6:], false)
+		} else if bytes.HasPrefix(item[3:], []byte("[x]")) {
+			out.WriteString("<p>")
+			p.r.TaskListItem(out, item[6:], true)
+		} else {
+			p.r.ListItem(out, item, *flags)
+		}
 	} else {
 		p.r.ListItem(out, item, *flags)
 	}
