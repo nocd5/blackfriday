@@ -1262,21 +1262,20 @@ gatherlines:
 	for parsedEnd > 0 && cookedBytes[parsedEnd-1] == '\n' {
 		parsedEnd--
 	}
-	item := cookedBytes[:parsedEnd]
+
+	// render task list
+	var item []byte
+	if bytes.HasPrefix(cookedBytes, []byte("<p>")) {
+		item = cookedBytes[3:parsedEnd]
+		out.WriteString("<p>")
+	} else {
+		item = cookedBytes[:parsedEnd]
+	}
+
 	if bytes.HasPrefix(item, []byte("[ ]")) {
 		p.r.TaskListItem(out, item[3:], false)
 	} else if bytes.HasPrefix(item, []byte("[x]")) {
 		p.r.TaskListItem(out, item[3:], true)
-	} else if bytes.HasPrefix(item, []byte("<p>")) {
-		if bytes.HasPrefix(item[3:], []byte("[ ]")) {
-			out.WriteString("<p>")
-			p.r.TaskListItem(out, item[6:], false)
-		} else if bytes.HasPrefix(item[3:], []byte("[x]")) {
-			out.WriteString("<p>")
-			p.r.TaskListItem(out, item[6:], true)
-		} else {
-			p.r.ListItem(out, item, *flags)
-		}
 	} else {
 		p.r.ListItem(out, item, *flags)
 	}
